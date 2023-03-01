@@ -1,0 +1,1 @@
+# mailchimp-one-click-subscribe-api
