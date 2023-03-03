@@ -3,6 +3,7 @@ using OneClickSubscribeApi.Domain.Options;
 using OneClickSubscribeApi.Domain.Services;
 using OneClickSubscribeApi.Domain.Services.Implementations;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("OneClickSubscribeApi.Domain.Tests")]
 namespace OneClickSubscribeApi.Domain;
 
 public static class ServiceCollectionExtensions

@@ -1,4 +1,4 @@
-﻿using System.Net.Mail;
+﻿using System.Text.RegularExpressions;
 using OneClickSubscribeApi.Domain.Models;
 using OneClickSubscribeApi.Domain.Options;
 using OneClickSubscribeApi.Domain.Repositories;
@@ -16,49 +16,42 @@ internal class SubscriptionProcessingService : ISubscriptionProcessingService
         _repository = repository;
     }
 
+    public static string EmailValidationRegexPattern =>
+        @"^[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+/0-9=?A-Z^_a-z{|}~])*@[a-zA-Z](-?[a-zA-Z0-9])*(\.[a-zA-Z](-?[a-zA-Z0-9])*)+$";
+
     public async Task<bool> TryProcessSubscriberAsync((string? email, string? firstName, string? lastName, string? type) values)
     {
-        if (!TryProcessValues(values, out var subscriber))
-            return false;
+        var isValid = TryProcessValues(values, out var subscriber);
 
         await _repository.AddSubscriberAsync(subscriber);
 
-        return true;
+        return isValid;
     }
 
     private bool TryProcessValues((string? email, string? firstName, string? lastName, string? type) values, out Subscriber subscriber)
     {
-        subscriber = null!;
-
         var (email, firstName, lastName, type) = values;
 
-        if (string.IsNullOrEmpty(email))
-            return false;
+        var isEmailValid = !string.IsNullOrEmpty(email) && IsValidEmail(email);
 
-        if (!IsValidEmail(email))
-            return false;
-
-        var typeToAdd = _options.ValidTypes.FirstOrDefault(t => t.Equals(type, StringComparison.OrdinalIgnoreCase)) ??
+        var typeToAdd = _options.ValidTypes.FirstOrDefault(t => t.Equals(type?.Trim(), StringComparison.OrdinalIgnoreCase)) ??
                         _options.DefaultType;
 
-        subscriber = new Subscriber(firstName, lastName, email, typeToAdd, State.New);
+        var state = isEmailValid ? State.New : State.Invalid;
 
-        return true;
+        subscriber = new Subscriber(firstName, lastName, email, typeToAdd, state);
+
+        return isEmailValid;
     }
 
     private static bool IsValidEmail(string email)
     {
-        var trimmedEmail = email.Trim();
-
-        if (trimmedEmail.EndsWith("."))
-            return false;
-
         try
         {
-            var mailAddress = new MailAddress(email);
-            return mailAddress.Address == trimmedEmail;
+            var rx = new Regex(EmailValidationRegexPattern);
+            return rx.IsMatch(email);
         }
-        catch
+        catch (FormatException)
         {
             return false;
         }

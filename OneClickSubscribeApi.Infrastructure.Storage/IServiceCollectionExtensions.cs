@@ -2,7 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using OneClickSubscribeApi.Domain.Repositories;
 using OneClickSubscribeApi.Infrastructure.Storage.Options;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("OneClickSubscribeApi.Infrastructure.Storage.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] 
 namespace OneClickSubscribeApi.Infrastructure.Storage;
 
 public static class ServiceCollectionExtensions

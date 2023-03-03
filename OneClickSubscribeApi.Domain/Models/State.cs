@@ -2,5 +2,6 @@
 
 public enum State
 {
-    New
+    New,
+    Invalid
 }
