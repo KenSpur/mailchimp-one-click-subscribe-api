@@ -2,7 +2,7 @@
 
 ## 🛠️ Technologies used
 - [dotnet](https://dotnet.microsoft.com/) Open-source developer platform
-- [xUnit](https://xunit.net/) Open source, community-focused unit testing tool for the .NET Framework
+- [xUnit](https://xunit.net/) Open source, community-focused unit testing tool
 <!-- - [Terraform](https://www.terraform.io/) Infrastructure as Code tool -->
 
 ## 🎯 Targets
