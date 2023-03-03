@@ -1,26 +1,27 @@
 using System.Net;
-using System.Net.Mail;
 using System.Web;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Options;
 using OneClickSubscribeApi.Options;
-using OneClickSubscribeApi.Services;
 using Microsoft.Azure.Functions.Worker.Http;
+using OneClickSubscribeApi.Domain.Services;
 
 namespace OneClickSubscribeApi;
 
 public class OneClickSubscribeFunction
 {
-    private readonly IStorageService _storageService;
+    private readonly ISubscriptionProcessingService _subscriptionProcessingService;
     private readonly ApplicationOptions _options;
 
-    public OneClickSubscribeFunction(IOptions<ApplicationOptions> options, IStorageService storageService)
+    public OneClickSubscribeFunction(IOptions<ApplicationOptions> options, ISubscriptionProcessingService subscriptionProcessingService)
     {
-        _storageService = storageService;
+        _subscriptionProcessingService = subscriptionProcessingService;
         _options = options.Value;
     }
 
     private static string EmailQueryParam => "email";
+    private static string FirstNameQueryParam => "firstname";
+    private static string LastNameQueryParam => "lastname";
     private static string TypeQueryParam => "type";
 
     [Function(nameof(OneClickSubscribeFunction))]
@@ -28,14 +29,14 @@ public class OneClickSubscribeFunction
     {
         var queryValues = GetQueryValues(request.Url.Query);
 
-        if (!queryValues.TryGetValue(EmailQueryParam, out var email) || !IsValidEmail(email))
-            return CreateRedirectResponse(request, _options.RedirectToForm);
-
+        queryValues.TryGetValue(EmailQueryParam, out var email);
+        queryValues.TryGetValue(FirstNameQueryParam, out var firstname);
+        queryValues.TryGetValue(LastNameQueryParam, out var lastname);
         queryValues.TryGetValue(TypeQueryParam, out var type);
 
-        await _storageService.AddSubscriberAsync(email, type);
-
-        return CreateRedirectResponse(request, _options.RedirectToSubscribed);
+        return await _subscriptionProcessingService.TryProcessSubscriberAsync((email, firstname, lastname, type))
+                ? CreateRedirectResponse(request, _options.RedirectToSubscribed)
+                : CreateRedirectResponse(request, _options.RedirectToForm);
     }
 
     private static Dictionary<string, string> GetQueryValues(string query)
@@ -63,23 +64,5 @@ public class OneClickSubscribeFunction
         response.Headers.Add("Location", location);
 
         return response;
-    }
-
-    private static bool IsValidEmail(string email)
-    {
-        var trimmedEmail = email.Trim();
-
-        if (trimmedEmail.EndsWith("."))
-            return false;
-        
-        try
-        {
-            var mailAddress = new MailAddress(email);
-            return mailAddress.Address == trimmedEmail;
-        }
-        catch
-        {
-            return false;
-        }
     }
 }

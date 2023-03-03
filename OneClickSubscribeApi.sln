@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi", "OneClickSubscribeApi\OneClickSubscribeApi.csproj", "{13D42282-D782-47A7-992D-D1CCD05B0D95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneClickSubscribeApi.Domain", "OneClickSubscribeApi.Domain\OneClickSubscribeApi.Domain.csproj", "{5089E0E7-41B2-4BB2-ADD8-601043547AB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneClickSubscribeApi.Infrastructure.Storage", "OneClickSubscribeApi.Infrastructure.Storage\OneClickSubscribeApi.Infrastructure.Storage.csproj", "{7355789A-BB58-4F9F-AA73-903ABAF89AB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{13D42282-D782-47A7-992D-D1CCD05B0D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13D42282-D782-47A7-992D-D1CCD05B0D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13D42282-D782-47A7-992D-D1CCD05B0D95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5089E0E7-41B2-4BB2-ADD8-601043547AB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5089E0E7-41B2-4BB2-ADD8-601043547AB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5089E0E7-41B2-4BB2-ADD8-601043547AB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5089E0E7-41B2-4BB2-ADD8-601043547AB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7355789A-BB58-4F9F-AA73-903ABAF89AB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7355789A-BB58-4F9F-AA73-903ABAF89AB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7355789A-BB58-4F9F-AA73-903ABAF89AB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7355789A-BB58-4F9F-AA73-903ABAF89AB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

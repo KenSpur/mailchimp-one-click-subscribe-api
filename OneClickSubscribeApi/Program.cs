@@ -1,10 +1,12 @@
-using Azure.Data.Tables;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using OneClickSubscribeApi.Domain;
+using OneClickSubscribeApi.Domain.Options;
+using OneClickSubscribeApi.Infrastructure.Storage;
+using OneClickSubscribeApi.Infrastructure.Storage.Options;
 using OneClickSubscribeApi.Options;
-using OneClickSubscribeApi.Services;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -17,20 +19,32 @@ var host = new HostBuilder()
     })
     .ConfigureServices(services =>
     {
-        services.AddOptions<StorageOptions>().Configure<IConfiguration>(
-                       (options, config) => config.GetSection(StorageOptions.Key).Bind(options));
-
         services.AddOptions<ApplicationOptions>().Configure<IConfiguration>(
-                       (options, config) => config.GetSection(ApplicationOptions.Key).Bind(options));
+                       (options, config) => config.GetSection(nameof(ApplicationOptions)).Bind(options));
 
-        services.AddScoped(provider =>
+        services.AddOptions<SubscriptionOptions>().Configure<IConfiguration>(
+            (options, config) => config.GetSection(nameof(SubscriptionOptions)).Bind(options));
+
+        services.AddOptions<StorageOptions>().Configure<IConfiguration>(
+            (options, config) => config.GetSection(nameof(StorageOptions)).Bind(options));
+
+        services.AddDomain((provider, options) =>
         {
-            var options = provider.GetRequiredService<IOptions<StorageOptions>>().Value;
+            var subscriptionOptions = provider.GetRequiredService<IOptions<SubscriptionOptions>>().Value;
 
-            return new TableClient(options.TableStorageConnectionString, options.TableName);
+            options.ValidTypes = subscriptionOptions.ValidTypes;
+            options.DefaultType = subscriptionOptions.DefaultType;
         });
 
-        services.AddTransient<IStorageService, StorageService>();
+        services.AddStorageInfrastructure((provider, options) =>
+        {
+            var storageOptions = provider.GetRequiredService<IOptions<StorageOptions>>().Value;
+
+            options.TableName = storageOptions.TableName;
+            options.TableStorageConnectionString = storageOptions.TableStorageConnectionString;
+        });
+
+
     }) 
     .Build();
 
