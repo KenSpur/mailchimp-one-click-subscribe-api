@@ -7,7 +7,7 @@ using OneClickSubscribeApi.Infrastructure.Storage.Entities;
 
 namespace OneClickSubscribeApi.Infrastructure.Storage.Tests
 {
-    public class SubscriberRepositoryShould
+    public class SubscriberRepositoryAddSubscriberAsyncShould
     {
         [Fact]
         public async Task UseTheSubscriberPartitionKeyWhenTheSubscriberStateIsNew()

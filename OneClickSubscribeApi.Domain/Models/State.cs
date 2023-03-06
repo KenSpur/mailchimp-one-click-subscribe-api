@@ -3,5 +3,7 @@
 public enum State
 {
     New,
-    Invalid
+    Invalid,
+    Added,
+    FailedToAdd
 }

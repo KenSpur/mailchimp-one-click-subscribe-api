@@ -9,11 +9,13 @@ internal class SubscriptionProcessingService : ISubscriptionProcessingService
 {
     private readonly SubscriptionOptions _options;
     private readonly ISubscriberRepository _repository;
+    private readonly IMailchimpService _mailchimpService;
 
-    public SubscriptionProcessingService(SubscriptionOptions options, ISubscriberRepository repository)
+    public SubscriptionProcessingService(SubscriptionOptions options, ISubscriberRepository repository, IMailchimpService mailchimpService)
     {
         _options = options;
         _repository = repository;
+        _mailchimpService = mailchimpService;
     }
 
     public static string EmailValidationRegexPattern =>
@@ -26,6 +28,18 @@ internal class SubscriptionProcessingService : ISubscriptionProcessingService
         await _repository.AddSubscriberAsync(subscriber);
 
         return isValid;
+    }
+
+    public async Task ProcessSubscribersAsync()
+    {
+        var subscribers = await _repository.GetSubscribersAsync(State.New);
+
+        var results = await _mailchimpService.TryAddSubscribersAsync(subscribers);
+
+        foreach (var (subscriber, succeeded) in results)
+            subscriber.SetState(succeeded ? State.Added : State.FailedToAdd);
+
+        await _repository.UpdateSubscribersStateAsync(results.Select(r => r.subscriber).ToList());
     }
 
     private bool TryProcessValues((string? email, string? firstName, string? lastName, string? type) values, out Subscriber subscriber)

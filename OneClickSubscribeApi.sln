@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Infras
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Domain.Tests", "OneClickSubscribeApi.Domain.Tests\OneClickSubscribeApi.Domain.Tests.csproj", "{A195035B-77FD-4574-A771-621E489D874C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneClickSubscribeApi.Infrastructure.Storage.Tests", "OneClickSubscribeApi.Infrastructure.Storage.Tests\OneClickSubscribeApi.Infrastructure.Storage.Tests.csproj", "{0FA03586-7F77-4690-B369-5EB5F3C2B16D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Infrastructure.Storage.Tests", "OneClickSubscribeApi.Infrastructure.Storage.Tests\OneClickSubscribeApi.Infrastructure.Storage.Tests.csproj", "{0FA03586-7F77-4690-B369-5EB5F3C2B16D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

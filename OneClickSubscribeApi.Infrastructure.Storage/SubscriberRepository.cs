@@ -1,4 +1,5 @@
-﻿using Azure.Data.Tables;
+﻿using Azure;
+using Azure.Data.Tables;
 using OneClickSubscribeApi.Domain.Models;
 using OneClickSubscribeApi.Domain.Repositories;
 using OneClickSubscribeApi.Infrastructure.Storage.Defaults;
@@ -40,5 +41,29 @@ internal class SubscriberRepository : ISubscriberRepository
             State = subscriber.State,
             Type = subscriber.Type
         });
+    }
+
+    public async Task<IReadOnlyCollection<Subscriber>> GetSubscribersAsync(State state)
+    {
+        await _tableClient.CreateIfNotExistsAsync();
+
+        var subscribers = await _tableClient.QueryAsync<SubscriberEntity>(e => e.State == state).ToListAsync();
+
+        return subscribers.Select(s => new Subscriber(
+            s.Email,
+            s.Firstname,
+            s.Lastname,
+            s.Type,
+            s.State)).ToList();
+    }
+
+    public async Task UpdateSubscribersStateAsync(IReadOnlyCollection<Subscriber> subscribers)
+    {
+        foreach (var subscriber in subscribers)
+            await _tableClient.UpdateEntityAsync(new SubscriberEntity
+            {
+                Email = subscriber.Email,
+                State = subscriber.State
+            }, ETag.All);
     }
 }

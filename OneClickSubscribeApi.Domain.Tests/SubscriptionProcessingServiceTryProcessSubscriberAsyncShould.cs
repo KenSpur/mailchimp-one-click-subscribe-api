@@ -1,13 +1,10 @@
-using FluentAssertions;
-using Moq;
 using OneClickSubscribeApi.Domain.Models;
 using OneClickSubscribeApi.Domain.Options;
 using OneClickSubscribeApi.Domain.Repositories;
-using OneClickSubscribeApi.Domain.Services.Implementations;
 
 namespace OneClickSubscribeApi.Domain.Tests;
 
-public class SubscriptionProcessingServiceShould
+public class SubscriptionProcessingServiceTryProcessSubscriberAsyncShould : SubscriptionProcessingServiceTestBase
 {
     public static IEnumerable<object[]> InvalidEmailData()
     {
@@ -43,7 +40,7 @@ public class SubscriptionProcessingServiceShould
         var values = (email, firstname, lastname, type);
 
         // Arrange
-        var service = new SubscriptionProcessingService(new SubscriptionOptions(), new Mock<ISubscriberRepository>().Object);
+        var service = CreateSubscriptionProcessingService();
 
         // Act
         var result = await service.TryProcessSubscriberAsync(values);
@@ -59,7 +56,7 @@ public class SubscriptionProcessingServiceShould
         // Arrange
         var values = (email, firstname, lastname, type);
 
-        var service = new SubscriptionProcessingService(new SubscriptionOptions(), new Mock<ISubscriberRepository>().Object);
+        var service = CreateSubscriptionProcessingService();
 
         // Act
         var result = await service.TryProcessSubscriberAsync(values);
@@ -75,7 +72,7 @@ public class SubscriptionProcessingServiceShould
         // Arrange
         var values = (email, firstname, lastname, type);
         var repoMock = new Mock<ISubscriberRepository>();
-        var service = new SubscriptionProcessingService(new SubscriptionOptions(), repoMock.Object);
+        var service = CreateSubscriptionProcessingService(repository: repoMock.Object);
 
         // Act
         await service.TryProcessSubscriberAsync(values);
@@ -92,7 +89,7 @@ public class SubscriptionProcessingServiceShould
         // Arrange
         var values = (email, firstname, lastname, type);
         var repoMock = new Mock<ISubscriberRepository>();
-        var service = new SubscriptionProcessingService(new SubscriptionOptions(), repoMock.Object);
+        var service = CreateSubscriptionProcessingService(repository: repoMock.Object);
 
         // Act
         await service.TryProcessSubscriberAsync(values);
@@ -109,7 +106,7 @@ public class SubscriptionProcessingServiceShould
         // Arrange
         var values = (email, firstname, lastname, type);
         var repoMock = new Mock<ISubscriberRepository>();
-        var service = new SubscriptionProcessingService(new SubscriptionOptions(), repoMock.Object);
+        var service = CreateSubscriptionProcessingService(repository: repoMock.Object);
 
         // Act
         await service.TryProcessSubscriberAsync(values);
@@ -135,7 +132,7 @@ public class SubscriptionProcessingServiceShould
             DefaultType = "default"
         };
         var repoMock = new Mock<ISubscriberRepository>();
-        var service = new SubscriptionProcessingService(options, repoMock.Object);
+        var service = CreateSubscriptionProcessingService(options: options, repository: repoMock.Object);
 
         // Act
         await service.TryProcessSubscriberAsync(values);
@@ -163,7 +160,7 @@ public class SubscriptionProcessingServiceShould
             DefaultType = "default"
         };
         var repoMock = new Mock<ISubscriberRepository>();
-        var service = new SubscriptionProcessingService(options, repoMock.Object);
+        var service = CreateSubscriptionProcessingService(options: options, repository: repoMock.Object);
 
         // Act
         await service.TryProcessSubscriberAsync(values);
@@ -189,7 +186,7 @@ public class SubscriptionProcessingServiceShould
             DefaultType = "default"
         };
         var repoMock = new Mock<ISubscriberRepository>();
-        var service = new SubscriptionProcessingService(options, repoMock.Object);
+        var service = CreateSubscriptionProcessingService(options: options, repository: repoMock.Object);
 
         // Act
         await service.TryProcessSubscriberAsync(values);

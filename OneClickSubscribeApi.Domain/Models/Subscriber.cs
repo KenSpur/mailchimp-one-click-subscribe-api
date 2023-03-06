@@ -15,5 +15,10 @@ public class Subscriber
     public string? Lastname { get; }
     public string? Email { get; }
     public string? Type { get; }
-    public State State { get; }
+    public State State { get; private set; }
+
+    internal void SetState(State state)
+    {
+        State = state;
+    }
 }
