@@ -28,7 +28,7 @@ public class OneClickSubscribeFunction
     private static string TypeQueryParam => "type";
 
     [Function(nameof(OneClickSubscribeFunction))]
-    public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequestData request)
+    public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]HttpRequestData request)
     {
         try
         {

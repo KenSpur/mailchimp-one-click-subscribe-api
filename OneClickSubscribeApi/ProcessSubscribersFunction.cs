@@ -13,6 +13,6 @@ public class ProcessSubscribersFunction
     }
 
     [Function(nameof(ProcessSubscribersFunction))]
-    public Task RunAsync([TimerTrigger("*/5 * * * * *")]TimerInfo timerInfo)
+    public Task RunAsync([TimerTrigger("0 */15 * * * *")]TimerInfo timerInfo)
         => _subscriptionProcessingService.ProcessSubscribersAsync();
 }
