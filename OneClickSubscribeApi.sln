@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi", "OneClickSubscribeApi\OneClickSubscribeApi.csproj", "{13D42282-D782-47A7-992D-D1CCD05B0D95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi", "projects\OneClickSubscribeApi\OneClickSubscribeApi.csproj", "{13D42282-D782-47A7-992D-D1CCD05B0D95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Domain", "OneClickSubscribeApi.Domain\OneClickSubscribeApi.Domain.csproj", "{5089E0E7-41B2-4BB2-ADD8-601043547AB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Domain", "projects\OneClickSubscribeApi.Domain\OneClickSubscribeApi.Domain.csproj", "{5089E0E7-41B2-4BB2-ADD8-601043547AB5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Infrastructure.Storage", "OneClickSubscribeApi.Infrastructure.Storage\OneClickSubscribeApi.Infrastructure.Storage.csproj", "{7355789A-BB58-4F9F-AA73-903ABAF89AB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Infrastructure.Storage", "projects\OneClickSubscribeApi.Infrastructure.Storage\OneClickSubscribeApi.Infrastructure.Storage.csproj", "{7355789A-BB58-4F9F-AA73-903ABAF89AB5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Domain.Tests", "OneClickSubscribeApi.Domain.Tests\OneClickSubscribeApi.Domain.Tests.csproj", "{A195035B-77FD-4574-A771-621E489D874C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Domain.Tests", "projects\OneClickSubscribeApi.Domain.Tests\OneClickSubscribeApi.Domain.Tests.csproj", "{A195035B-77FD-4574-A771-621E489D874C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Infrastructure.Storage.Tests", "OneClickSubscribeApi.Infrastructure.Storage.Tests\OneClickSubscribeApi.Infrastructure.Storage.Tests.csproj", "{0FA03586-7F77-4690-B369-5EB5F3C2B16D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Infrastructure.Storage.Tests", "projects\OneClickSubscribeApi.Infrastructure.Storage.Tests\OneClickSubscribeApi.Infrastructure.Storage.Tests.csproj", "{0FA03586-7F77-4690-B369-5EB5F3C2B16D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneClickSubscribeApi.Infrastructure.Http", "OneClickSubscribeApi.Infrastructure.Http\OneClickSubscribeApi.Infrastructure.Http.csproj", "{4850E00B-38B8-4894-95F4-7C3D28121CB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneClickSubscribeApi.Infrastructure.Http", "projects\OneClickSubscribeApi.Infrastructure.Http\OneClickSubscribeApi.Infrastructure.Http.csproj", "{4850E00B-38B8-4894-95F4-7C3D28121CB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
