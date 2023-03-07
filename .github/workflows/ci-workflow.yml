@@ -14,6 +14,9 @@ on:
         required: true
         type: string
 
+env:
+  PUBLISH_FOLDER: ./OneClickSubscribeApi
+
 jobs:
   build_test_and_publish:
 
@@ -21,24 +24,27 @@ jobs:
 
     steps:  
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
 
+      - name: Restore
+        run: dotnet restore
+      
       - name: Build
-        run: dotnet build --configuration Release
-
+        run: dotnet build --configuration Release --no-restore
+      
       - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test --configuration Release --no-build
 
       - name: Publish
-        run: dotnet publish --configuration Release --no-build --output ./publish
+        run: dotnet publish --configuration Release --no-build --output ${{ env.PUBLISH_FOLDER }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: publish
-          path: ./publish
+          path: ${{ env.PUBLISH_FOLDER }}
