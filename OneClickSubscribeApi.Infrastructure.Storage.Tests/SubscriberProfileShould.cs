@@ -12,7 +12,7 @@ public class SubscriberProfileShould
     public void CorrectlyMapSubscriberOnSubscriberEntity()
     {
         // Arrange
-        var subscriber = new Subscriber("fn", "ln", "e@m.ail", "t", State.Added);
+        var subscriber = new Subscriber("fn", "ln", "e@m.ail", "t", State.Added, "empty");
 
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<SubscriberProfile>()).CreateMapper();
 
@@ -25,6 +25,7 @@ public class SubscriberProfileShould
         entity.Email?.ToLowerInvariant().Should().Be(subscriber.Email);
         entity.Type.Should().Be(subscriber.Type);
         entity.State.Should().Be(subscriber.State);
+        entity.Details.Should().Be(subscriber.Details);
     }
 
     [Fact]
@@ -37,7 +38,8 @@ public class SubscriberProfileShould
             Lastname = "nl",
             Email = "e@mai.l",
             Type = "e",
-            State = State.FailedToAdd
+            State = State.FailedToAdd,
+            Details = "d"
         };
 
         var mapper = new MapperConfiguration(cfg => cfg.AddProfile<SubscriberProfile>()).CreateMapper();
@@ -51,5 +53,6 @@ public class SubscriberProfileShould
         subscriber.Email.Should().Be(entity.Email?.ToLowerInvariant());
         subscriber.Type.Should().Be(entity.Type);
         subscriber.State.Should().Be(entity.State);
+        subscriber.Details.Should().Be(entity.Details);
     }
 }

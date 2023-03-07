@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Domain
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneClickSubscribeApi.Infrastructure.Storage.Tests", "OneClickSubscribeApi.Infrastructure.Storage.Tests\OneClickSubscribeApi.Infrastructure.Storage.Tests.csproj", "{0FA03586-7F77-4690-B369-5EB5F3C2B16D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneClickSubscribeApi.Infrastructure.Http", "OneClickSubscribeApi.Infrastructure.Http\OneClickSubscribeApi.Infrastructure.Http.csproj", "{4850E00B-38B8-4894-95F4-7C3D28121CB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0FA03586-7F77-4690-B369-5EB5F3C2B16D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FA03586-7F77-4690-B369-5EB5F3C2B16D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FA03586-7F77-4690-B369-5EB5F3C2B16D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4850E00B-38B8-4894-95F4-7C3D28121CB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4850E00B-38B8-4894-95F4-7C3D28121CB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4850E00B-38B8-4894-95F4-7C3D28121CB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4850E00B-38B8-4894-95F4-7C3D28121CB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

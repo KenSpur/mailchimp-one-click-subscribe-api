@@ -46,20 +46,24 @@ internal class SubscriberRepository : ISubscriberRepository
     {
         await _tableClient.CreateIfNotExistsAsync();
 
-        var entities = await _tableClient.QueryAsync<SubscriberEntity>(e => e.State == state).ToListAsync();
+        var entities = await _tableClient.QueryAsync<SubscriberEntity>(e => e.PartitionKey == SubscriberPartitionKey).ToListAsync();
+
+        entities = entities.Where(e => e.State == state).ToList();
 
         var subscribers = _mapper.Map<IReadOnlyCollection<Subscriber>>(entities);
 
         return subscribers;
     }
 
-    public async Task UpdateSubscribersStateAsync(IReadOnlyCollection<Subscriber> subscribers)
+    public async Task UpdateSubscribersStateAndDetailsAsync(IReadOnlyCollection<Subscriber> subscribers)
     {
         foreach (var subscriber in subscribers)
             await _tableClient.UpdateEntityAsync(new SubscriberEntity
             {
+                PartitionKey = SubscriberPartitionKey,
                 Email = subscriber.Email,
-                State = subscriber.State
+                State = subscriber.State,
+                Details = subscriber.Details
             }, ETag.All);
     }
 }

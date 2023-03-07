@@ -18,7 +18,7 @@ public class SubscriberRepositoryUpdateSubscribersStateAsyncShould
     }
 
     [Fact]
-    public async Task OnlyUpdateSubscriberState()
+    public async Task OnlyUpdateSubscriberStateAndDetails()
     {
         // Arrange
         var subscribers = Subscribers().ToList();
@@ -36,15 +36,17 @@ public class SubscriberRepositoryUpdateSubscribersStateAsyncShould
 
                 return properties.Where(p =>
                            p.Name != nameof(SubscriberEntity.State)
+                           && p.Name != nameof(SubscriberEntity.Details)
                            && p.Name != nameof(SubscriberEntity.Email)
                            && p.Name != nameof(SubscriberEntity.RowKey)
+                           && p.Name != nameof(SubscriberEntity.PartitionKey)
                            && p.Name != nameof(SubscriberEntity.ETag))
                        .All(p => p.GetValue(entity) is null)
                    && entity.State == subscriber.State;
             };
                 
         // Act
-        await repo.UpdateSubscribersStateAsync(subscribers);
+        await repo.UpdateSubscribersStateAndDetailsAsync(subscribers);
 
         // Assert
         tableClient.Verify(t => t.UpdateEntityAsync(

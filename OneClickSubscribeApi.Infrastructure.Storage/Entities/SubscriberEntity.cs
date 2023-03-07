@@ -17,6 +17,7 @@ internal class SubscriberEntity : ITableEntity
     public string? Lastname { get; set; }
     public string? Type { get; set; }
     public State State { get; set; }
+    public string? Details { get; set; }
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 }

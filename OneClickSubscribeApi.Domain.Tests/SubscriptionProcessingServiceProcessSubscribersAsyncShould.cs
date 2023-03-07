@@ -6,23 +6,23 @@ namespace OneClickSubscribeApi.Domain.Tests;
 
 public class SubscriptionProcessingServiceProcessSubscribersAsyncShould : SubscriptionProcessingServiceTestBase
 {
-    public static IEnumerable<(Subscriber subscriber, bool success)> SuccessfulMailchimpResults()
+    public static IEnumerable<(Subscriber subscriber, bool success, string details)> SuccessfulMailchimpResults()
     {
-        yield return ( new Subscriber(null, null, email: "test@success.com", null, State.New), true);
-        yield return ( new Subscriber(null, null, email: "test@successful.net", null, State.New), true);
-        yield return ( new Subscriber(null, null, email: "success@test.net", null, State.New), true);
-        yield return ( new Subscriber(null, null, email: "a@examples.c", null, State.New), true);
+        yield return ( new Subscriber(null, null, email: "test@success.com", null, State.New), true, string.Empty);
+        yield return ( new Subscriber(null, null, email: "test@successful.net", null, State.New), true, string.Empty);
+        yield return ( new Subscriber(null, null, email: "success@test.net", null, State.New), true, string.Empty);
+        yield return ( new Subscriber(null, null, email: "a@examples.c", null, State.New), true, string.Empty);
     }
 
-    public static IEnumerable<(Subscriber subscriber, bool success)> FailedMailchimpResults()
+    public static IEnumerable<(Subscriber subscriber, bool success, string details)> FailedMailchimpResults()
     {
-        yield return ( new Subscriber(null, null, email: "test@failed.com", null, State.New), false) ;
-        yield return ( new Subscriber(null, null, email: "test@failiure.net", null, State.New), false);
-        yield return ( new Subscriber(null, null, email: "failed@test.net", null, State.New), false);
-        yield return ( new Subscriber(null, null, email: "t@example.c", null, State.New), false);
+        yield return ( new Subscriber(null, null, email: "test@failed.com", null, State.New), false, string.Empty) ;
+        yield return ( new Subscriber(null, null, email: "test@failiure.net", null, State.New), false, string.Empty);
+        yield return ( new Subscriber(null, null, email: "failed@test.net", null, State.New), false, string.Empty);
+        yield return ( new Subscriber(null, null, email: "t@example.c", null, State.New), false, string.Empty);
     }
 
-    public static IReadOnlyCollection<(Subscriber subscriber, bool success)> BothSuccessfulAndFailedMailchimpResults =>
+    public static IReadOnlyCollection<(Subscriber subscriber, bool success, string details)> BothSuccessfulAndFailedMailchimpResults =>
         SuccessfulMailchimpResults().Concat(FailedMailchimpResults()).ToList();
 
     [Fact]
@@ -41,7 +41,7 @@ public class SubscriptionProcessingServiceProcessSubscribersAsyncShould : Subscr
 
         // Assert
         repository.Verify(r =>
-            r.UpdateSubscribersStateAsync(It.Is<IReadOnlyCollection<Subscriber>>(
+            r.UpdateSubscribersStateAndDetailsAsync(It.Is<IReadOnlyCollection<Subscriber>>(
                 subs => subs.Where(s =>
                         SuccessfulMailchimpResults().Any(result => result.subscriber.Email == s.Email))
                     .All(s => s.State == State.Added))));
@@ -63,7 +63,7 @@ public class SubscriptionProcessingServiceProcessSubscribersAsyncShould : Subscr
 
         // Assert
         repository.Verify(r => 
-            r.UpdateSubscribersStateAsync(It.Is<IReadOnlyCollection<Subscriber>>(
+            r.UpdateSubscribersStateAndDetailsAsync(It.Is<IReadOnlyCollection<Subscriber>>(
                 subs => subs.Where(s => 
                         FailedMailchimpResults().Any(result => result.subscriber.Email == s.Email))
                     .All(s => s.State == State.FailedToAdd))));

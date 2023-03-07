@@ -36,10 +36,16 @@ internal class SubscriptionProcessingService : ISubscriptionProcessingService
 
         var results = await _mailchimpService.TryAddSubscribersAsync(subscribers);
 
-        foreach (var (subscriber, succeeded) in results)
-            subscriber.SetState(succeeded ? State.Added : State.FailedToAdd);
+        foreach (var (subscriber, succeeded, details) in results)
+            SetStateAndDetails(subscriber, succeeded, details);
 
-        await _repository.UpdateSubscribersStateAsync(results.Select(r => r.subscriber).ToList());
+        await _repository.UpdateSubscribersStateAndDetailsAsync(results.Select(r => r.subscriber).ToList());
+    }
+
+    private static void SetStateAndDetails(Subscriber subscriber, bool succeeded, string details)
+    {
+        subscriber.SetState(succeeded ? State.Added : State.FailedToAdd);
+        subscriber.SetDetails(details);
     }
 
     private bool TryProcessValues((string? email, string? firstName, string? lastName, string? type) values, out Subscriber subscriber)

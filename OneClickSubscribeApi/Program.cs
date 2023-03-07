@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OneClickSubscribeApi.Domain;
 using OneClickSubscribeApi.Domain.Options;
+using OneClickSubscribeApi.Infrastructure.Http;
+using OneClickSubscribeApi.Infrastructure.Http.Options;
 using OneClickSubscribeApi.Infrastructure.Storage;
 using OneClickSubscribeApi.Infrastructure.Storage.Options;
 using OneClickSubscribeApi.Options;
@@ -25,6 +27,9 @@ var host = new HostBuilder()
         services.AddOptions<SubscriptionOptions>().Configure<IConfiguration>(
             (options, config) => config.GetSection(nameof(SubscriptionOptions)).Bind(options));
 
+        services.AddOptions<HttpOptions>().Configure<IConfiguration>(
+            (options, config) => config.GetSection(nameof(HttpOptions)).Bind(options));
+
         services.AddOptions<StorageOptions>().Configure<IConfiguration>(
             (options, config) => config.GetSection(nameof(StorageOptions)).Bind(options));
 
@@ -36,6 +41,16 @@ var host = new HostBuilder()
             options.DefaultType = subscriptionOptions.DefaultType;
         });
 
+        services.AddHttpInfrastructure((provider, options) =>
+        {
+            var httpOptions = provider.GetRequiredService<IOptions<HttpOptions>>().Value;
+
+            options.MailchimpApiKey = httpOptions.MailchimpApiKey;
+            options.MailchimpApiBaseUrl = httpOptions.MailchimpApiBaseUrl;
+            options.MailchimpAudienceId = httpOptions.MailchimpAudienceId;
+            options.MailchimpTypeMergeTag = httpOptions.MailchimpTypeMergeTag;
+        });
+
         services.AddStorageInfrastructure((provider, options) =>
         {
             var storageOptions = provider.GetRequiredService<IOptions<StorageOptions>>().Value;
@@ -43,8 +58,6 @@ var host = new HostBuilder()
             options.TableName = storageOptions.TableName;
             options.TableStorageConnectionString = storageOptions.TableStorageConnectionString;
         });
-
-
     }) 
     .Build();
 

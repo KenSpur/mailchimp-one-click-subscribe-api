@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OneClickSubscribeApi.Domain\OneClickSubscribeApi.Domain.csproj" />
+    <ProjectReference Include="..\OneClickSubscribeApi.Infrastructure.Http\OneClickSubscribeApi.Infrastructure.Http.csproj" />
     <ProjectReference Include="..\OneClickSubscribeApi.Infrastructure.Storage\OneClickSubscribeApi.Infrastructure.Storage.csproj" />
   </ItemGroup>
 
