@@ -22,7 +22,7 @@ public class SubscriberProfileShould
         // Assert
         entity.Firstname.Should().Be(subscriber.Firstname);
         entity.Lastname.Should().Be(subscriber.Lastname);
-        entity.Email.Should().Be(subscriber.Email);
+        entity.Email?.ToLowerInvariant().Should().Be(subscriber.Email);
         entity.Type.Should().Be(subscriber.Type);
         entity.State.Should().Be(subscriber.State);
     }
@@ -48,7 +48,7 @@ public class SubscriberProfileShould
         // Assert
         subscriber.Firstname.Should().Be(entity.Firstname);
         subscriber.Lastname.Should().Be(entity.Lastname);
-        subscriber.Email.Should().Be(entity.Email);
+        subscriber.Email.Should().Be(entity.Email?.ToLowerInvariant());
         subscriber.Type.Should().Be(entity.Type);
         subscriber.State.Should().Be(entity.State);
     }

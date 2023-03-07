@@ -6,7 +6,7 @@ public class Subscriber
     {
         Firstname = firstname;
         Lastname = lastname;
-        Email = email;
+        Email = email?.ToLowerInvariant();
         Type = type;
         State = state;
     }
