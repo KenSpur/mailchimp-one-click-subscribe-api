@@ -2,10 +2,10 @@
 
 public class Subscriber
 {
-    public Subscriber(string? firstName, string? lastName, string? email, string? type, State state)
+    public Subscriber(string? firstname, string? lastname, string? email, string? type, State state)
     {
-        Firstname = firstName;
-        Lastname = lastName;
+        Firstname = firstname;
+        Lastname = lastname;
         Email = email;
         Type = type;
         State = state;

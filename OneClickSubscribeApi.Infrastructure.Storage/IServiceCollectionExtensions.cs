@@ -28,6 +28,8 @@ public static class ServiceCollectionExtensions
             return new TableClient(options.TableStorageConnectionString, options.TableName);
         });
 
+        services.AddAutoMapper(typeof(ServiceCollectionExtensions).Assembly);
+
         return services;
     }
 }

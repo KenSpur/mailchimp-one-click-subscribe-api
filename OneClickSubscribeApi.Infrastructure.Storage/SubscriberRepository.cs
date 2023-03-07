@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using AutoMapper;
+using Azure;
 using Azure.Data.Tables;
 using OneClickSubscribeApi.Domain.Models;
 using OneClickSubscribeApi.Domain.Repositories;
@@ -10,10 +11,12 @@ namespace OneClickSubscribeApi.Infrastructure.Storage;
 internal class SubscriberRepository : ISubscriberRepository
 {
     private readonly TableClient _tableClient;
+    private readonly IMapper _mapper;
 
-    public SubscriberRepository(TableClient tableClient)
+    public SubscriberRepository(TableClient tableClient, IMapper mapper)
     {
         _tableClient = tableClient;
+        _mapper = mapper;
     }
 
     private static string SubscriberPartitionKey => SubscriberPartitionKeyDefaults.ValidSubscriber;
@@ -27,34 +30,27 @@ internal class SubscriberRepository : ISubscriberRepository
             ? InvalidSubscriberPartitionKey
             : SubscriberPartitionKey;
 
-        var entity = await _tableClient.GetEntityIfExistsAsync<SubscriberEntity>(partitionKey, subscriber.Email);
+        var existingEntity = await _tableClient.GetEntityIfExistsAsync<SubscriberEntity>(partitionKey, subscriber.Email);
 
-        if (entity.HasValue)
+        if (existingEntity.HasValue)
             return;
 
-        await _tableClient.AddEntityAsync(new SubscriberEntity
-        {
-            PartitionKey = partitionKey,
-            Email = subscriber.Email,
-            Firstname = subscriber.Firstname,
-            Lastname = subscriber.Lastname,
-            State = subscriber.State,
-            Type = subscriber.Type
-        });
+        var entity = _mapper.Map<SubscriberEntity>(subscriber);
+
+        entity.PartitionKey = partitionKey;
+
+        await _tableClient.AddEntityAsync(entity);
     }
 
     public async Task<IReadOnlyCollection<Subscriber>> GetSubscribersAsync(State state)
     {
         await _tableClient.CreateIfNotExistsAsync();
 
-        var subscribers = await _tableClient.QueryAsync<SubscriberEntity>(e => e.State == state).ToListAsync();
+        var entities = await _tableClient.QueryAsync<SubscriberEntity>(e => e.State == state).ToListAsync();
 
-        return subscribers.Select(s => new Subscriber(
-            s.Email,
-            s.Firstname,
-            s.Lastname,
-            s.Type,
-            s.State)).ToList();
+        var subscribers = _mapper.Map<IReadOnlyCollection<Subscriber>>(entities);
+
+        return subscribers;
     }
 
     public async Task UpdateSubscribersStateAsync(IReadOnlyCollection<Subscriber> subscribers)

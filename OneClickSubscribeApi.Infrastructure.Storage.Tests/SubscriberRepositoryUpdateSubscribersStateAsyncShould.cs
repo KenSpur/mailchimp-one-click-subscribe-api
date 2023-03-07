@@ -1,3 +1,4 @@
+using AutoMapper;
 using Azure;
 using Azure.Data.Tables;
 using Moq;
@@ -23,7 +24,8 @@ public class SubscriberRepositoryUpdateSubscribersStateAsyncShould
         var subscribers = Subscribers().ToList();
 
         var tableClient = new Mock<TableClient>();
-        var repo = new SubscriberRepository(tableClient.Object);
+        var mapper = new Mock<IMapper>();
+        var repo = new SubscriberRepository(tableClient.Object, mapper.Object);
 
         var validation =
             (SubscriberEntity entity) =>
