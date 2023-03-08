@@ -12,7 +12,7 @@ on:
       ref:
         description: 'The branch to checkout'
         required: true
-        type: string
+        type: choice
         options:
           - main
           - develop
