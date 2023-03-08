@@ -55,7 +55,7 @@ jobs:
         run: dotnet test --configuration Release --no-build
 
       - name: Publish
-        run: dotnet publish ./projects/${{ env.PROJECT_NAME }}.csproj --configuration Release --no-build --out ${{ env.PUBLISH_FOLDER }}
+        run: dotnet publish ./projects/${{ env.PROJECT_NAME }}.csproj --configuration Release --no-build -o ${{ env.PUBLISH_FOLDER }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
