@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
     paths-ignore:
       - '**/README.md'
       - '.github/workflows/**'
@@ -17,7 +18,7 @@ on:
         type: string
 
 env:
-  PUBLISH_FOLDER: ./OneClickSubscribeApi
+  PUBLISH_FOLDER: ./publish
 
 jobs:
   build_test_and_publish:
@@ -29,6 +30,14 @@ jobs:
 
     steps:  
       - uses: actions/checkout@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          ref: ${{ github.ref_slug }}
+
+      - uses: actions/checkout@v3
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        with:
+          ref: ${{ inputs.ref }}
 
       - name: Setup .NET SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
