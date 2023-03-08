@@ -19,6 +19,7 @@ on:
 
 env:
   PUBLISH_FOLDER: ./publish
+  PROJECT_NAME: OneClickSubscribeApi
 
 jobs:
   build_test_and_publish:
@@ -54,7 +55,7 @@ jobs:
         run: dotnet test --configuration Release --no-build
 
       - name: Publish
-        run: dotnet publish --configuration Release --no-build --output ${{ env.PUBLISH_FOLDER }}
+        run: dotnet publish ./projects/${{ env.PROJECT_NAME }}.csproj --configuration Release --no-build --out ${{ env.PUBLISH_FOLDER }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
