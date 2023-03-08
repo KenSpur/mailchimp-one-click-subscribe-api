@@ -1,0 +1,71 @@
+name: IAC Deploy workflow
+
+on: 
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'templates/**'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'The branch to checkout'
+        required: true
+        type: string
+        options:
+          - main
+          - develop
+
+jobs:
+  deploy_iac:
+    environment: ${{ github.ref_slug }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          ref: ${{ github.ref_slug }}
+
+      - uses: actions/checkout@v3
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: '1.3.7'
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - run: |
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="storage_account_name=${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ secrets.TFSTATE_STORAGE_CONTAINER_NAME }}" \
+            -backend-config="key=terraform.tfstate" \
+            -backend-config="resource_group_name=${{ secrets.TFSTATE_RESOURCE_GROUP_NAME }}"
+
+      - name: Terraform Workspace Select
+        run: |
+          terraform workspace select ${{ github.ref_slug }} || terraform workspace new ${{ github.ref_slug }}
+
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+          -var="infix=${{ env.INFIX }}" \
+          -var="env=${{ env.ENV_SUFFiX }}"
+
+      - name: Terraform Apply
+        run: |
+          terraform apply \
+          -auto-approve \
+          -var="infix=${{ env.INFIX }}" \
+          -var="env=${{ env.ENV_SUFFiX }}"
