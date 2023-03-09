@@ -8,40 +8,30 @@ on:
     paths:
       - 'templates/**'
   workflow_dispatch:
-    inputs:
-      ref:
-        description: 'The branch to checkout'
-        required: true
-        type: choice
-        options:
-          - main
-          - develop
 
 env:
   TEMPLATES_DIR: ./templates
 
 jobs:
   deploy_iac:
-    environment: ${{ github.ref_slug }}${{ inputs.ref }}
+    if: ${{ github.ref_name == 'main' || github.ref_name == 'develop' }}
+    environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set REF Variable
-        run: |
-          if [ "${{ github.event_name }}" == "push" ]; then
-            echo "REF=${{ github.ref_slug }}" >> $GITHUB_ENV
-          else
-            echo "REF=${{ inputs.ref }}" >> $GITHUB_ENV
-          fi
-
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.REF }}
+          ref: ${{ github.ref_name }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: '1.3.7'
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: '{ "clientId": "${{ secrets.AZURE_CLIENT_ID }}", "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}", "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}", "tenantId": "${{ secrets.AZURE_TENANT_ID }}" }'
 
       - name: Terraform Init
         working-directory: ${{ env.TEMPLATES_DIR }}
@@ -57,15 +47,10 @@ jobs:
             -backend-config="container_name=${{ vars.TFSTATE_STORAGE_CONTAINER_NAME }}" \
             -backend-config="key=terraform.tfstate" 
             
-      - name: Terraform Workspace Select ${{ env.REF }}
+      - name: Terraform Workspace Select  ${{ github.ref_name }}
         working-directory: ${{ env.TEMPLATES_DIR }}
         run: |
-          terraform workspace select ${{ env.REF }} || terraform workspace new ${{ env.REF }}
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: '{ "clientId": "${{ secrets.AZURE_CLIENT_ID }}", "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}", "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}", "tenantId": "${{ secrets.AZURE_TENANT_ID }}" }'
+          terraform workspace select ${{ github.ref_name }} || terraform workspace new  ${{ github.ref_name }}
 
       - name: Terraform Plan
         working-directory: ${{ env.TEMPLATES_DIR }}
