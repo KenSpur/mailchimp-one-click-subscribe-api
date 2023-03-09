@@ -25,7 +25,7 @@ locals {
 
 # resource group
 resource "azurerm_resource_group" "main" {
-  name     = "rg-${var.infix}-ocsubapi-${var.env}"
+  name     = "rg-${var.infix}-oneclicksubapi-${var.env}"
   location = "West Europe"
 
   tags = local.tags

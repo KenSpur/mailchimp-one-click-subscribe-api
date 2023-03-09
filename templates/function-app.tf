@@ -1,5 +1,5 @@
 resource "azurerm_service_plan" "main" {
-  name                = "asp-${var.infix}-ocsubapi-${var.env}"
+  name                = "asp-${var.infix}-oneclicksubapi-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
 
@@ -10,7 +10,7 @@ resource "azurerm_service_plan" "main" {
 }
 
 resource "azurerm_windows_function_app" "main" {
-  name                = "fn-${var.infix}-ocsubapi-${var.env}"
+  name                = "fn-${var.infix}-oneclicksubapi-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
 
