@@ -40,7 +40,7 @@ jobs:
 
       - uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
 
       - run: |
           az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -61,11 +61,11 @@ jobs:
         run: |
           terraform plan \
           -var="infix=${{ env.INFIX }}" \
-          -var="env=${{ env.ENV_SUFFiX }}"
+          -var="env=${{ env.ENV_SUFFIX }}"
 
       - name: Terraform Apply
         run: |
           terraform apply \
           -auto-approve \
           -var="infix=${{ env.INFIX }}" \
-          -var="env=${{ env.ENV_SUFFiX }}"
+          -var="env=${{ env.ENV_SUFFIX }}"
