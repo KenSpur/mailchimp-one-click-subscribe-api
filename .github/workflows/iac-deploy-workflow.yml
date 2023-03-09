@@ -17,55 +17,67 @@ on:
           - main
           - develop
 
+env:
+  TEMPLATES_DIR: ./templates
+
 jobs:
   deploy_iac:
-    environment: ${{ github.ref_slug }}
+    environment: ${{ github.ref_slug }}${{ inputs.ref }}
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'push' }}
-        with:
-          ref: ${{ github.ref_slug }}
+      - name: Set REF Variable
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "REF=${{ github.ref_slug }}" >> $GITHUB_ENV
+          else
+            echo "REF=${{ inputs.ref }}" >> $GITHUB_ENV
+          fi
 
       - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'workflow_dispatch' }}
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ env.REF }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: '1.3.7'
 
-      - uses: azure/login@v1
-        with:
-          credentials: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - run: |
-          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
       - name: Terraform Init
+        working-directory: ${{ env.TEMPLATES_DIR }}
         run: |
           terraform init \
-            -backend-config="storage_account_name=${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ secrets.TFSTATE_STORAGE_CONTAINER_NAME }}" \
-            -backend-config="key=terraform.tfstate" \
-            -backend-config="resource_group_name=${{ secrets.TFSTATE_RESOURCE_GROUP_NAME }}"
-
-      - name: Terraform Workspace Select
+            -backend-config="use_azuread_auth=true" \
+            -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -backend-config="client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
+            -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+            -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
+            -backend-config="resource_group_name=${{ vars.TFSTATE_RESOURCE_GROUP_NAME }}" \
+            -backend-config="storage_account_name=${{ vars.TFSTATE_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ vars.TFSTATE_STORAGE_CONTAINER_NAME }}" \
+            -backend-config="key=terraform.tfstate" 
+            
+      - name: Terraform Workspace Select ${{ env.REF }}
+        working-directory: ${{ env.TEMPLATES_DIR }}
         run: |
-          terraform workspace select ${{ github.ref_slug }} || terraform workspace new ${{ github.ref_slug }}
+          terraform workspace select ${{ env.REF }} || terraform workspace new ${{ env.REF }}
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: '{ "clientId": "${{ secrets.AZURE_CLIENT_ID }}", "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}", "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}", "tenantId": "${{ secrets.AZURE_TENANT_ID }}" }'
 
       - name: Terraform Plan
+        working-directory: ${{ env.TEMPLATES_DIR }}
         run: |
           terraform plan \
-          -var="infix=${{ env.INFIX }}" \
-          -var="env=${{ env.ENV_SUFFIX }}"
+          -var="infix=${{ vars.INFIX }}" \
+          -var="env=${{ vars.ENV_SUFFIX }}"
 
       - name: Terraform Apply
+        working-directory: ${{ env.TEMPLATES_DIR }}
         run: |
           terraform apply \
           -auto-approve \
-          -var="infix=${{ env.INFIX }}" \
-          -var="env=${{ env.ENV_SUFFIX }}"
+          -var="infix=${{ vars.INFIX }}" \
+          -var="env=${{ vars.ENV_SUFFIX }}"
