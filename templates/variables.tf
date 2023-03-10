@@ -11,7 +11,7 @@ variable "app_infix" {
 
 variable "env" {
   type    = string
-  default = "dev"
+  default = "tst"
 }
 
 variable "location" {
