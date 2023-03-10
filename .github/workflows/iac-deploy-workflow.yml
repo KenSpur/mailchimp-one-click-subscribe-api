@@ -56,13 +56,33 @@ jobs:
         working-directory: ${{ env.TEMPLATES_DIR }}
         run: |
           terraform plan \
-          -var="infix=${{ vars.INFIX }}" \
-          -var="env=${{ vars.ENV_SUFFIX }}"
+          -var='org_infix=${{ vars.ORG_INFIX }}' \
+          -var='app_infix=${{ vars.APP_INFIX }}' \
+          -var='resource_group_name=${{ vars.RESOURCE_GROUP_NAME }}' \
+          -var='function_app_name=${{ vars.FUNCTION_APP_NAME }}' \
+          -var='redirect_to_form_url=${{ vars.REDIRECT_TO_FORM_URL }}' \
+          -var='redirect_to_subscribed_url=${{ vars.REDIRECT_TO_SUBSCRIBED_URL }}' \
+          -var='subscription_default_type=${{ vars.SUBSCRIPTION_DEFAULT_TYPE }}' \
+          -var='subscription_valid_types=${{ vars.SUBSCRIPTION_VALID_TYPES }}' \
+          -var='mailchimp_base_url=${{ vars.MAILCHIMP_BASE_URL }}' \
+          -var='mailchimp_api_key=${{ secrets.MAILCHIMP_API_KEY }}' \
+          -var='mailchimp_audience_id=${{ vars.MAILCHIMP_AUDIENCE_ID }}' \
+          -var='mailchimp_type_merge_tag=${{ vars.MAILCHIMP_TYPE_MERGE_TAG }}'
 
       - name: Terraform Apply
         working-directory: ${{ env.TEMPLATES_DIR }}
         run: |
           terraform apply \
           -auto-approve \
-          -var="infix=${{ vars.INFIX }}" \
-          -var="env=${{ vars.ENV_SUFFIX }}"
+          -var='org_infix=${{ vars.ORG_INFIX }}' \
+          -var='app_infix=${{ vars.APP_INFIX }}' \
+          -var='resource_group_name=${{ vars.RESOURCE_GROUP_NAME }}' \
+          -var='function_app_name=${{ vars.FUNCTION_APP_NAME }}' \
+          -var='redirect_to_form_url=${{ vars.REDIRECT_TO_FORM_URL }}' \
+          -var='redirect_to_subscribed_url=${{ vars.REDIRECT_TO_SUBSCRIBED_URL }}' \
+          -var='subscription_default_type=${{ vars.SUBSCRIPTION_DEFAULT_TYPE }}' \
+          -var='subscription_valid_types=${{ vars.SUBSCRIPTION_VALID_TYPES }}' \
+          -var='mailchimp_base_url=${{ vars.MAILCHIMP_BASE_URL }}' \
+          -var='mailchimp_api_key=${{ secrets.MAILCHIMP_API_KEY }}' \
+          -var='mailchimp_audience_id=${{ vars.MAILCHIMP_AUDIENCE_ID }}' \
+          -var='mailchimp_type_merge_tag=${{ vars.MAILCHIMP_TYPE_MERGE_TAG }}'

@@ -1,5 +1,5 @@
 resource "azurerm_service_plan" "main" {
-  name                = "asp-${var.infix}-oneclicksubapi-${var.env}"
+  name                = "asp-${var.org_infix}-${var.app_infix}-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
 
@@ -9,10 +9,19 @@ resource "azurerm_service_plan" "main" {
   sku_name = "Y1"
 }
 
+locals {
+  valid_type_keys         = [for type in var.subscription_valid_types : "SubscriptionOptions__ValidTypes__${index(var.subscription_valid_types, type)}"]
+  valid-type-settings-map = zipmap(local.valid_type_keys, var.subscription_valid_types)
+}
+
 resource "azurerm_windows_function_app" "main" {
-  name                = "fn-${var.infix}-oneclicksubapi-${var.env}"
+  name                = var.function_app_name
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
+
+  identity {
+    type = "SystemAssigned"
+  }
 
   tags = local.tags
 
@@ -29,8 +38,21 @@ resource "azurerm_windows_function_app" "main" {
     }
   }
 
-  app_settings = {
+  app_settings = merge({
     FUNCTIONS_EXTENSION_VERSION = "~4"
     FUNCTIONS_WORKER_RUNTIME    = "dotnet-isolated"
-  }
+
+    ApplicationOptions__RedirectToForm       = "${var.redirect_to_form_url}"
+    ApplicationOptions__RedirectToSubscribed = "${var.redirect_to_subscribed_url}"
+
+    HttpOptions__MailchimpBaseUrl      = "${var.mailchimp_base_url}"
+    HttpOptions__MailchimpApiKey       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.mailchimp_api_key.id})"
+    HttpOptions__MailchimpAudienceId   = "${var.mailchimp_audience_id}"
+    HttpOptions__MailchimpTypeMergeTag = "${var.mailchimp_type_merge_tag}"
+
+    StorageOptions__TableStorageConnectionString = azurerm_storage_account.main.primary_blob_connection_string
+    StorageOptions__TableName                    = "${var.subscribers_table_name}"
+
+    SubscriptionOptions__DefaultType = "${var.subscription_default_type}"
+  }, local.valid-type-settings-map)
 }
