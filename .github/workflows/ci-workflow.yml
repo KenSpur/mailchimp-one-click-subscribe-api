@@ -1,15 +1,14 @@
 name: CI workflow
 
 on: 
-  push:
-    branches:
-      - main
-      - develop
-    paths-ignore:
-      - '**/README.md'
-      - '.github/workflows/**'
-      - '.gitignore'
-      - 'templates/**'
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+    outputs:
+      artifact:
+        value: ${{ jobs.build_test_and_publish.artifact }}
   workflow_dispatch:
     inputs:
       ref:
@@ -18,7 +17,6 @@ on:
         type: string
 
 env:
-  PUBLISH_FOLDER: ./publish
   PROJECT_NAME: OneClickSubscribeApi
 
 jobs:
@@ -31,12 +29,6 @@ jobs:
 
     steps:  
       - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'push' }}
-        with:
-          ref: ${{ github.ref_slug }}
-
-      - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'workflow_dispatch' }}
         with:
           ref: ${{ inputs.ref }}
 
@@ -55,10 +47,18 @@ jobs:
         run: dotnet test --configuration Release --no-build
 
       - name: Publish
-        run: dotnet publish ./projects/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --configuration Release --no-build -o ${{ env.PUBLISH_FOLDER }}
+        run: dotnet publish ./projects/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --configuration Release --no-build -o ./${{ env.PROJECT_NAME }}
+
+      - name: Zip
+        run: 7z a -tzip ${{ env.PROJECT_NAME }}.zip ./${{ env.PROJECT_NAME }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: publish
-          path: ${{ env.PUBLISH_FOLDER }}
+          name: ${{ env.PROJECT_NAME }}
+          path: ./${{ env.PROJECT_NAME }}.zip
+
+      - name: Output artifact location
+        if: ${{ github.event_name == 'workflow_call' }}
+        id: outputArtifact
+        run: echo "artifact=${{ env.PROJECT_NAME }}" >> $GITHUB_OUTPUT

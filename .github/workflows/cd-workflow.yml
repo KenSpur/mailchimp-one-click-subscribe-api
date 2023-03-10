@@ -1,0 +1,48 @@
+name: CI/CD workflow
+
+on: 
+  push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - '**/README.md'
+      - '.github/workflows/**'
+      - '.gitignore'
+      - 'templates/**'
+
+jobs:
+  
+  ci_workflow:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      ref: ${{ github.ref_name }}
+
+  deploy:
+    needs: ci_workflow
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: '{ "clientId": "${{ secrets.AZURE_CLIENT_ID }}", "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}", "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}", "tenantId": "${{ secrets.AZURE_TENANT_ID }}" }'
+
+      - name: Validate Infrastructure Deployed
+        run: |
+          exists=$(az group exists --name ${{ vars.RESOURCE_GROUP_NAME }})
+          echo "RG_EXISTS=$exists" >> $GITHUB_ENV
+      
+      - uses: actions/download-artifact@v3
+        if: ${{ env.RG_EXISTS == 'true' }}
+        with:
+          name: ${{ needs.ci_workflow.outputs.artifact }}
+          path: function
+
+      - name: Deploy Azure Functions app
+        if: ${{ env.RG_EXISTS == 'true' }}
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ vars.FUNCTION_APP_NAME }}
+          package: function
+          
