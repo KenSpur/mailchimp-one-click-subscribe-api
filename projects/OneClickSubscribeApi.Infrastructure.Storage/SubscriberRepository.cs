@@ -46,9 +46,9 @@ internal class SubscriberRepository : ISubscriberRepository
     {
         await _tableClient.CreateIfNotExistsAsync();
 
-        var entities = await _tableClient.QueryAsync<SubscriberEntity>(e => e.PartitionKey == SubscriberPartitionKey).ToListAsync();
-
-        entities = entities.Where(e => e.State == state).ToList();
+        var entities = await _tableClient.QueryAsync<SubscriberEntity>(filter: 
+            $"{nameof(SubscriberEntity.PartitionKey)} eq '{SubscriberPartitionKey}' and {nameof(SubscriberEntity.State)} eq '{state}'")
+            .ToListAsync();
 
         var subscribers = _mapper.Map<IReadOnlyCollection<Subscriber>>(entities);
 
