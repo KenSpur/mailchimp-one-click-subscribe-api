@@ -49,9 +49,6 @@ jobs:
       - name: Publish
         run: dotnet publish ./projects/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --configuration Release --no-build -o ./${{ env.PROJECT_NAME }}
 
-      - name: Zip
-        run: 7z a -tzip ${{ env.PROJECT_NAME }}.zip ./${{ env.PROJECT_NAME }}
-
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
