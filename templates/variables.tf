@@ -58,9 +58,9 @@ variable "subscription_valid_types" {
 }
 
 # Mailchimp
-variable "mailchimp_base_url" {
+variable "mailchimp_api_base_url" {
   type    = string
-  default = "mailchimp_base_url"
+  default = "mailchimp_api_base_url"
 }
 
 variable "mailchimp_api_key" {

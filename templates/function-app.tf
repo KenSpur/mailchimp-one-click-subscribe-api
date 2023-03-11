@@ -45,7 +45,7 @@ resource "azurerm_windows_function_app" "main" {
     ApplicationOptions__RedirectToForm       = "${var.redirect_to_form_url}"
     ApplicationOptions__RedirectToSubscribed = "${var.redirect_to_subscribed_url}"
 
-    HttpOptions__MailchimpBaseUrl      = "${var.mailchimp_base_url}"
+    HttpOptions__MailchimpApiBaseUrl      = "${var.mailchimp_api_base_url}"
     HttpOptions__MailchimpApiKey       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.mailchimp_api_key.id})"
     HttpOptions__MailchimpAudienceId   = "${var.mailchimp_audience_id}"
     HttpOptions__MailchimpTypeMergeTag = "${var.mailchimp_type_merge_tag}"

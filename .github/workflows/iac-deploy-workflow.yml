@@ -65,7 +65,7 @@ jobs:
           -var='redirect_to_subscribed_url=${{ vars.REDIRECT_TO_SUBSCRIBED_URL }}' \
           -var='subscription_default_type=${{ vars.SUBSCRIPTION_DEFAULT_TYPE }}' \
           -var='subscription_valid_types=${{ vars.SUBSCRIPTION_VALID_TYPES }}' \
-          -var='mailchimp_base_url=${{ vars.MAILCHIMP_BASE_URL }}' \
+          -var='mailchimp_api_base_url=${{ vars.MAILCHIMP_BASE_URL }}' \
           -var='mailchimp_api_key=${{ secrets.MAILCHIMP_API_KEY }}' \
           -var='mailchimp_audience_id=${{ vars.MAILCHIMP_AUDIENCE_ID }}' \
           -var='mailchimp_type_merge_tag=${{ vars.MAILCHIMP_TYPE_MERGE_TAG }}'
@@ -84,7 +84,7 @@ jobs:
           -var='redirect_to_subscribed_url=${{ vars.REDIRECT_TO_SUBSCRIBED_URL }}' \
           -var='subscription_default_type=${{ vars.SUBSCRIPTION_DEFAULT_TYPE }}' \
           -var='subscription_valid_types=${{ vars.SUBSCRIPTION_VALID_TYPES }}' \
-          -var='mailchimp_base_url=${{ vars.MAILCHIMP_BASE_URL }}' \
+          -var='mailchimp_api_base_url=${{ vars.MAILCHIMP_BASE_URL }}' \
           -var='mailchimp_api_key=${{ secrets.MAILCHIMP_API_KEY }}' \
           -var='mailchimp_audience_id=${{ vars.MAILCHIMP_AUDIENCE_ID }}' \
           -var='mailchimp_type_merge_tag=${{ vars.MAILCHIMP_TYPE_MERGE_TAG }}'
