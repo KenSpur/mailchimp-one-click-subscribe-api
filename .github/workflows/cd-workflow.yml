@@ -31,19 +31,19 @@ jobs:
 
       - name: Validate Infrastructure Deployed
         run: |
-          exists=$(az group exists --name ${{ vars.RESOURCE_GROUP_NAME }})
-          echo "RG_EXISTS=$exists" >> $GITHUB_ENV
+          $exists=$(az group exists --name ${{ vars.RESOURCE_GROUP_NAME }})
+          "RG_EXISTS=$exists" >> $env:GITHUB_ENV
       
       - uses: actions/download-artifact@v3
-        if: ${{ env.RG_EXISTS == 'true' }}
+        if: ${{ env.RG_EXISTS }}
         with:
-          name: ${{ needs.ci_workflow.outputs.artifact }}
-          path: function
+          name: functionapp
+          path: functionapp
 
       - name: Deploy Azure Functions app
-        if: ${{ env.RG_EXISTS == 'true' }}
+        if: ${{ env.RG_EXISTS }}
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ vars.FUNCTION_APP_NAME }}
-          package: function
+          package: functionapp
           

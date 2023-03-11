@@ -17,7 +17,8 @@ on:
         type: string
 
 env:
-  PROJECT_NAME: OneClickSubscribeApi
+  FUNCTION_APP_DIRECTORY: projects\OneClickSubscribeApi
+  FUNCTION_APP_PACKAGE_PATH: projects\OneClickSubscribeApi\published
 
 jobs:
   build_test_and_publish:
@@ -47,15 +48,10 @@ jobs:
         run: dotnet test --configuration Release --no-build
 
       - name: Publish
-        run: dotnet publish ./projects/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --configuration Release --no-build -o ./${{ env.PROJECT_NAME }}
+        run: dotnet publish ${{ env.FUNCTION_APP_DIRECTORY }} --configuration Release --no-build -o ${{ env.FUNCTION_APP_PACKAGE_PATH }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.PROJECT_NAME }}
-          path: ./${{ env.PROJECT_NAME }}.zip
-
-      - name: Output artifact location
-        if: ${{ github.event_name == 'workflow_call' }}
-        id: outputArtifact
-        run: echo "artifact=${{ env.PROJECT_NAME }}" >> $GITHUB_OUTPUT
+          name: functionapp
+          path: ${{ env.FUNCTION_APP_PACKAGE_PATH }}
