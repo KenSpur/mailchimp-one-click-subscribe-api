@@ -10,6 +10,7 @@ on:
       - '.github/workflows/**'
       - '.gitignore'
       - 'templates/**'
+  workflow_dispatch:
 
 jobs:
   
