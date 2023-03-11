@@ -27,7 +27,7 @@ provider "azurerm" {
 
 locals {
   tags = {
-    environment = "${var.env}"
+    environment = "${var.env_suffix}"
     managed_by  = "terraform"
   }
 }

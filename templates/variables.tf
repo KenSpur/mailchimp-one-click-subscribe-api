@@ -9,7 +9,7 @@ variable "app_infix" {
   default = "example"
 }
 
-variable "env" {
+variable "env_suffix" {
   type    = string
   default = "tst"
 }
