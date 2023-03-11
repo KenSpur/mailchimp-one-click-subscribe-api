@@ -42,10 +42,16 @@ resource "azurerm_windows_function_app" "main" {
     FUNCTIONS_EXTENSION_VERSION = "~4"
     FUNCTIONS_WORKER_RUNTIME    = "dotnet-isolated"
 
+    # WEBSITE_ENABLE_SYNC_UPDATE_SITE = "true"
+    # WEBSITE_RUN_FROM_PACKAGE = "1"
+
+    APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.main.instrumentation_key
+    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.main.connection_string
+
     ApplicationOptions__RedirectToForm       = "${var.redirect_to_form_url}"
     ApplicationOptions__RedirectToSubscribed = "${var.redirect_to_subscribed_url}"
 
-    HttpOptions__MailchimpApiBaseUrl      = "${var.mailchimp_api_base_url}"
+    HttpOptions__MailchimpApiBaseUrl   = "${var.mailchimp_api_base_url}"
     HttpOptions__MailchimpApiKey       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.mailchimp_api_key.id})"
     HttpOptions__MailchimpAudienceId   = "${var.mailchimp_audience_id}"
     HttpOptions__MailchimpTypeMergeTag = "${var.mailchimp_type_merge_tag}"
