@@ -6,9 +6,6 @@ on:
       ref:
         type: string
         required: true
-    outputs:
-      artifact:
-        value: ${{ jobs.build_test_and_publish.artifact }}
   workflow_dispatch:
     inputs:
       ref:
@@ -17,6 +14,7 @@ on:
         type: string
 
 env:
+  FUNCTION_APP_ARTIFACT_NAME: functionapp
   FUNCTION_APP_DIRECTORY: projects\OneClickSubscribeApi
   FUNCTION_APP_PACKAGE_PATH: projects\OneClickSubscribeApi\published
 

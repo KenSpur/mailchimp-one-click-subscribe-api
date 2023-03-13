@@ -1,27 +1,19 @@
-name: CI/CD workflow
+name: CD workflow
 
 on: 
-  push:
-    branches:
-      - main
-      - develop
-    paths-ignore:
-      - '**/README.md'
-      - '.github/workflows/**'
-      - '.gitignore'
-      - 'templates/**'
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+
+env:
+  FUNCTION_APP_ARTIFACT_NAME: functionapp
 
 jobs:
-  
-  ci_workflow:
-    uses: ./.github/workflows/ci-workflow.yml
-    with:
-      ref: ${{ github.ref_name }}
-
-  deploy:
-    needs: ci_workflow
-    environment: ${{ github.ref_name }}
+  deploy_functionapp:
+    if: ${{ inputs.ref == 'main' || inputs.ref == 'develop' }}
+    environment: ${{ inputs.ref }}
     runs-on: windows-latest
     steps:
       - name: Login to Azure
@@ -37,7 +29,7 @@ jobs:
       - uses: actions/download-artifact@v3
         if: ${{ env.RG_EXISTS }}
         with:
-          name: functionapp
+          name: ${{ env.FUNCTION_APP_ARTIFACT_NAME }}
           path: functionapp
 
       - name: Deploy Azure Functions app

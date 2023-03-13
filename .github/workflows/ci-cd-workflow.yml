@@ -1,0 +1,29 @@
+name: CI/CD workflow
+
+on: 
+  push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - '**/README.md'
+      - '.github/workflows/**'
+      - '.gitignore'
+      - 'templates/**'
+  workflow_dispatch:
+
+jobs:
+  ci_workflow:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      ref: ${{ github.ref_name }}
+
+  cd_workflow:
+    needs: ci_workflow
+    uses: ./.github/workflows/cd-workflow.yml  
+    with:
+      ref: ${{ github.ref_name }}
+    secrets: inherit
+    
+
+
