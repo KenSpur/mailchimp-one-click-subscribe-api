@@ -20,9 +20,9 @@ public class MailchimpService : IMailchimpService
 
     public async Task<IReadOnlyCollection<(Subscriber subscriber, bool succeeded, string details)>> TryAddSubscribersAsync(IReadOnlyCollection<Subscriber> subscribers)
     {
-        var tasks = subscribers.Select(TryAddSubscriberAsync);
-
-        var results = await Task.WhenAll(tasks);
+        var results = new List<(Subscriber subscriber, bool succeeded, string details)>();
+        foreach (var subscriber in subscribers)
+           results.Add(await TryAddSubscriberAsync(subscriber));
 
         return results;
     }

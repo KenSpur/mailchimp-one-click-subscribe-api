@@ -34,6 +34,23 @@ internal class SubscriptionProcessingService : ISubscriptionProcessingService
     {
         var subscribers = await _repository.GetSubscribersAsync(State.New);
 
+        var listToProcess = new List<Subscriber>();
+        foreach (var subscriber in subscribers)
+        {
+             listToProcess.Add(subscriber);
+             if (listToProcess.Count != _options.MaxBatchSize) continue;
+
+             // process the batch
+            await ProcessSubscribersAsync(subscribers);
+            listToProcess.Clear();
+        }
+
+        if(listToProcess.Any()) // process the rest
+            await ProcessSubscribersAsync(subscribers);
+    }
+
+    private async Task ProcessSubscribersAsync(IReadOnlyCollection<Subscriber> subscribers)
+    {
         var results = await _mailchimpService.TryAddSubscribersAsync(subscribers);
 
         foreach (var (subscriber, succeeded, details) in results)

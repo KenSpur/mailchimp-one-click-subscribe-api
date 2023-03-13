@@ -4,4 +4,5 @@ public class SubscriptionOptions
 {
     public string DefaultType { get; set; } = string.Empty;
     public ICollection<string> ValidTypes { get; set; } = new List<string>();
+    public int MaxBatchSize { get; set; } = 100;
 }

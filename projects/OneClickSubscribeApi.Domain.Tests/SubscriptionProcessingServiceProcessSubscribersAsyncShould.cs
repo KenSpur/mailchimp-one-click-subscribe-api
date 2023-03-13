@@ -30,6 +30,8 @@ public class SubscriptionProcessingServiceProcessSubscribersAsyncShould : Subscr
     {
         // Arrange
         var repository = new Mock<ISubscriberRepository>();
+        repository.Setup(r => r.GetSubscribersAsync(State.New))
+            .ReturnsAsync(BothSuccessfulAndFailedMailchimpResults.Select(r => r.subscriber).ToList);
         var mailchimpService = new Mock<IMailchimpService>();
         mailchimpService.Setup(m => m.TryAddSubscribersAsync(It.IsAny<IReadOnlyCollection<Subscriber>>()))
             .ReturnsAsync(BothSuccessfulAndFailedMailchimpResults);
@@ -52,6 +54,8 @@ public class SubscriptionProcessingServiceProcessSubscribersAsyncShould : Subscr
     {
         // Arrange
         var repository = new Mock<ISubscriberRepository>();
+        repository.Setup(r => r.GetSubscribersAsync(State.New))
+            .ReturnsAsync(BothSuccessfulAndFailedMailchimpResults.Select(r => r.subscriber).ToList);
         var mailchimpService = new Mock<IMailchimpService>();
         mailchimpService.Setup(m => m.TryAddSubscribersAsync(It.IsAny<IReadOnlyCollection<Subscriber>>()))
             .ReturnsAsync(BothSuccessfulAndFailedMailchimpResults);
