@@ -32,6 +32,9 @@ resource "azurerm_windows_function_app" "main" {
   https_only = true
 
   site_config {
+    application_insights_connection_string = azurerm_application_insights.main.connection_string
+    application_insights_key               = azurerm_application_insights.main.instrumentation_key
+    
     application_stack {
       dotnet_version              = "v6.0"
       use_dotnet_isolated_runtime = true
@@ -43,10 +46,7 @@ resource "azurerm_windows_function_app" "main" {
     FUNCTIONS_WORKER_RUNTIME    = "dotnet-isolated"
 
     WEBSITE_ENABLE_SYNC_UPDATE_SITE = "true"
-    WEBSITE_RUN_FROM_PACKAGE = "1"
-
-    APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.main.instrumentation_key
-    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.main.connection_string
+    WEBSITE_RUN_FROM_PACKAGE        = "1"
 
     ApplicationOptions__RedirectToForm       = "${var.redirect_to_form_url}"
     ApplicationOptions__RedirectToSubscribed = "${var.redirect_to_subscribed_url}"
